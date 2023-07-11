@@ -7,9 +7,11 @@ import {
   VALIDATOR_MINLENGTH
 } from '../../shared/util/validators';
 import { useForm } from '../../shared/hooks/form-hook';
+import { useHttpClient } from '../../shared/hooks/http-hook';
 import './PlaceForm.css';
 
 const NewPlace = () => {
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [formState, inputHandler] = useForm(
     {
       title: {
@@ -30,7 +32,12 @@ const NewPlace = () => {
 
   const placeSubmitHandler = event => {
     event.preventDefault();
-    console.log(formState.inputs); // send this to the backend!
+    sendRequest('http://localhost:5001/api/places', 'POST', JSON.stringify({
+      title: formState.inputs.title.value,
+      description: formState.inputs.description.value,
+      address: formState.inputs.address.value,
+      creator: formState.inputs.creator.value
+    }));
   };
 
   return (
