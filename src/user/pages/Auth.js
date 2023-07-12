@@ -64,7 +64,7 @@ const Auth = () => {
 
     if (isLoginMode) {
       try {
-        await sendRequest('http://localhost:5001/api/users/login', 'POST', JSON.stringify({
+        const responseData = await sendRequest('http://localhost:5001/api/users/login', 'POST', JSON.stringify({
           email: formState.inputs.email.value,
           password: formState.inputs.password.value,
         }),
@@ -72,13 +72,11 @@ const Auth = () => {
             'Content-Type': 'application/json'
           },
         );
-        auth.login();
-      } catch (err) {
-
-      }
+        auth.login(responseData.user.id);
+      } catch (err) { }
     } else {
       try {
-        await sendRequest('http://localhost:5001/api/users/signup', 'POST', JSON.stringify({
+        const responseData = await sendRequest('http://localhost:5001/api/users/signup', 'POST', JSON.stringify({
           name: formState.inputs.name.value,
           email: formState.inputs.email.value,
           password: formState.inputs.password.value,
@@ -87,7 +85,7 @@ const Auth = () => {
             'Content-Type': 'application/json'
           });
 
-        auth.login();
+        auth.login(responseData.user.id);
       } catch (err) { }
     }
   };
