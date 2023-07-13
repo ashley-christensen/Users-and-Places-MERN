@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import Input from '../../shared/components/FormElements/Input';
 import Button from '../../shared/components/FormElements/Button';
@@ -34,20 +35,23 @@ const NewPlace = () => {
     false
   );
 
-  const placeSubmitHandler = async (event) => {
+  const history = useHistory();
+
+  const placeSubmitHandler = async event => {
     event.preventDefault();
     try {
-      await sendRequest('http://localhost:5001/api/places', 'POST', JSON.stringify({
-        title: formState.inputs.title.value,
-        description: formState.inputs.description.value,
-        address: formState.inputs.address.value,
-        creator: auth.userId,
-      }),
-      {
-        'Content-Type': 'application/json'
-      }
+      await sendRequest(
+        'http://localhost:5001/api/places',
+        'POST',
+        JSON.stringify({
+          title: formState.inputs.title.value,
+          description: formState.inputs.description.value,
+          address: formState.inputs.address.value,
+          creator: auth.userId
+        }),
+        { 'Content-Type': 'application/json' }
       );
-      //Redirect user to a different page in success
+      history.push('/');
     } catch (err) { }
   };
 
@@ -55,7 +59,7 @@ const NewPlace = () => {
     <React.Fragment>
       <ErrorModal error={error} onClear={clearError} />
       <form className="place-form" onSubmit={placeSubmitHandler}>
-        {isLoading && <LoadingSpinner />}
+        {isLoading && <LoadingSpinner asOverlay />}
         <Input
           id="title"
           element="input"
